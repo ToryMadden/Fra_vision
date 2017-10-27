@@ -134,6 +134,14 @@ data %<>% mutate(stimulus = ifelse(str_detect(measure, pattern = '^.T'),
                                        yes = "tactile",
                                        no = "nociceptive"))
 
+data %<>% mutate(session = ifelse(x == "hitrate1",
+                                  yes = 1,
+                                  no = ifelse(x == "hitrate2",
+                                  yes = 2,
+                                  no = ifelse(x == "hitrate2V",
+                                              yes = 2,
+                                              no = NA))))
+
 data %<>% select(-x, -measure)
 
 # Save outputs

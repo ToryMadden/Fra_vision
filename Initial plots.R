@@ -17,15 +17,22 @@ library(magrittr)
 
 df <- read_rds('./data/fra-vision.rds')
 
-# Use forearm site, tactile stimulus, pain-free participants.
-
 # Create plots
 
-pain_free <- df %>% filter(pain == "no") %>%
-  filter(stimulus == "tactile") %>%
-  filter(site == "forearm")
+# Use forearm site, tactile stimulus, pain-free participants, both sessions.
 
-  unique(pain_free$id)
+df %>% filter(pain == "no") %>%
+  filter(hitrate > 2) %>%
+  filter(stimulus == "tactile") %>%
+  filter(site == "forearm") %>%
+  ggplot() +
+  aes(x = as.factor(distance),
+      y = hitrate,
+      colour = vision,
+      fill = vision) +
+  geom_violin()
+
+# Compare sessions, tactile, forearm, pain-free
 
 df %>% filter(pain == "no") %>%
   filter(stimulus == "tactile") %>%
@@ -33,9 +40,84 @@ df %>% filter(pain == "no") %>%
   ggplot() +
   aes(x = as.factor(distance),
       y = hitrate,
+      colour = as.factor(session),
+      fill = as.factor(session)) +
+  geom_violin()
+
+# Compare vision at session 2, tactile, forearm, pain-free
+
+df %>% filter(pain == "no") %>%
+  filter(stimulus == "tactile") %>%
+  filter(session == 2) %>%
+  filter(site == "forearm") %>%
+  ggplot() +
+  aes(x = as.factor(distance),
+      y = hitrate,
+      colour = as.factor(vision),
+      fill = as.factor(vision)) +
+  geom_violin()
+
+# Use forearm site, nociceptive stimulus, pain-free participants, both sessions.
+
+df %>% filter(pain == "no") %>%
+  filter(stimulus == "nociceptive") %>%
+  filter(site == "forearm") %>%
+  ggplot() +
+  aes(x = as.factor(distance),
+      y = hitrate,
       colour = as.factor(distance),
       fill = as.factor(distance)) +
   geom_violin()
+
+# Compare sessions, nociceptive, forearm, pain-free
+
+df %>% filter(pain == "no") %>%
+  filter(stimulus == "nociceptive") %>%
+  filter(site == "forearm") %>%
+  ggplot() +
+  aes(x = as.factor(distance),
+      y = hitrate,
+      colour = as.factor(session),
+      fill = as.factor(session)) +
+  geom_violin()
+
+# Compare vision at session 2, nociceptive, forearm, pain-free
+
+df %>% filter(pain == "no") %>%
+  filter(stimulus == "nociceptive") %>%
+  filter(session == 2) %>%
+  filter(site == "forearm") %>%
+  ggplot() +
+  aes(x = as.factor(distance),
+      y = hitrate,
+      colour = as.factor(vision),
+      fill = as.factor(vision)) +
+  geom_violin()
+
+# Compare tactile to nociceptive
+
+df %>% filter(pain == "no") %>%
+  filter(site == "forearm") %>%
+  ggplot() +
+  aes(x = as.factor(distance),
+      y = hitrate,
+      colour = as.factor(stimulus),
+      fill = as.factor(stimulus)) +
+  geom_violin()
+
+# Compare vision at session 2, both stimulus types, forearm, pain-free
+
+df %>% filter(pain == "no") %>%
+  filter(session == 2) %>%
+  filter(site == "forearm") %>%
+  ggplot() +
+  aes(x = as.factor(distance),
+      y = hitrate,
+      colour = as.factor(vision),
+      fill = as.factor(vision)) +
+  geom_violin()
+
+
 
 df %>% filter(hitrate > 0) %>%
   filter(stimulus == "tactile") %>%
