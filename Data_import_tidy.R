@@ -63,3 +63,45 @@ df_hits <- df %>% mutate(FN4_hitrate = rowSums(.[grep(pattern = '^FN4.$', x = na
          sex = SEX,
          group = GROUP)
 
+# Gather from wide to long format
+
+gathered <- gather(data = df_hits, 
+                   key = measure_type, 
+                   value = hitrate, 
+                   contains('hitrate'))
+
+gathered %<>% mutate(site = ifelse(str_detect(measure_type, pattern = '^F'), 
+                                  yes = "forearm",
+                                  no = "back"))
+
+gathered %<>% mutate(stimulus = ifelse(str_detect(measure_type, pattern = '^.T'), 
+                                        yes = "tactile",
+                                        no = "nociceptive"))
+
+gathered %<>% separate(col = measure_type, 
+                       into = c("measure", "x"))
+
+data <- gathered %>% mutate(
+  distance = ifelse(
+    grepl(pattern = '44$', x = measure),
+    yes = 44,
+    no = ifelse(grepl(pattern = '20$', x = measure),
+                yes = 20,
+                no = ifelse(grepl(pattern = '12$', x = measure),
+                                  yes = 12,
+                                  no = ifelse(grepl(pattern = '8$', x = measure),
+                                              yes = 8,
+                                              no = 4)))))
+
+data %<>% mutate(stimulus = ifelse(str_detect(measure, pattern = '^.T'), 
+                                       yes = "tactile",
+                                       no = "nociceptive"))
+
+data %<>% select(-x, -measure)
+
+# Save outputs
+
+write_rds(x = data, 
+          path = './data/fra-vision.rds')
+write_csv(x = data,
+          path = './data/fra-vision.csv')
